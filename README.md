@@ -5,8 +5,8 @@ The purpose of this repository is to provide a collection of examples demonstrat
 
 # Use Cases:
 
-* Insurance Call Center Operation Analysis
-* Machine Learning Feature Engineering
+* [Insurance Call Center Operation Analysis](insurance_call_center_operation_analysis/README.md)
+* [Machine Learning Feature Engineering](ML_Feature_Engineering/README.md)
 * Predictive Maintenance
 * Churn Prediction and Customer Retention
 * Sales Data Enrichment and Integration
