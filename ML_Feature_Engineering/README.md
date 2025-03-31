@@ -1,4 +1,4 @@
-# USE CASE Description
+# Use Case Description
 
 Feature engineering is the process of transforming raw data into a numerical format that can be 
 used by machine learning algorithms. Text data often contains a lot of information that can be 
