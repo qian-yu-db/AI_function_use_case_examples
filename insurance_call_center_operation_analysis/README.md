@@ -72,8 +72,39 @@ SELECT
       responseFormat => 'STRUCT<intent_analysis:STRUCT<intent:STRING, context:STRING>>',
       failOnError => false
     ) as intent_analysis,
+  ai_query(
+    "databricks-claude-3-7-sonnet",
+    concat("You are a compliance officer for an insurance company.",
+           "Using the following 5 guidelines:", (select guidelines from fins_genai.call_center.call_center_guidelines),
+           "to identify the violations from the customer service operators based on the following transrcipt:",
+           "<transcript>", transcript, "</transcript>\n",
+           "each violation on a guideline count as 1 violation and max number of violations is 5"
+           "each operator starts with 10 points, deduct 1 point for each violations"
+           "return the final points in a json {'points': INT'}, do not explain"
+           ""),
+    returnType => 'STRUCT<points:INT>'
+    ) as compliance_score,
+  ai_query(
+    "databricks-claude-3-7-sonnet",
+    concat("You are a compliance officer for an insurance company.",
+           "Using the following guildlines:", (select guidelines from fins_genai.call_center.call_center_guidelines),
+           "to identify the violations from the customer service operators based on the following transrcipt:",
+           "<transcript>", transcript, "</transcript>\n", 
+           "each violation on a guideline count as 1 violation and max number of violations is 5"
+           "Give justifaction to each violation")
+    ) as compliance_violations_justification,
+  ai_query(
+      "databricks-meta-llama-3-3-70b-instruct",
+      concat("You are a customer service agent for an insurance company.", 
+             "Your task is to recommend the next best action for the customer service agent.",
+             "analysis the following transcript: ", "<transcript>", transcript, "</transcript>\n",
+             "give a recommendation of the next best action from the following list of choices: ", 
+             "'follow-up call', 'promotional email', 'automated email', 'apology email'",
+             "Answer with one recommended action, do not explain. If no action is required, return 'none'."
+             "Answer with a succinct justificaction of the recommendation in less than 5 words "),
+      responseFormat => 'STRUCT<recommendation:STRUCT<catagory:STRING, justification:STRING>>'
+    ) as next_best_action,
 FROM customer_call_transcripts
 ```
 
 ## Notebook Example
-
